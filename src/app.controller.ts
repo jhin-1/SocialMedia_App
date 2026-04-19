@@ -5,6 +5,7 @@ import { authRouter } from "./modules"
 import cors from "cors"
 import { env } from "./config/env.service"
 import DBConnection from "./database/connection"
+import { redisService } from "./common/services/redis.service"
 
     
 const bootstrap = async(): Promise<void> => {
@@ -16,7 +17,8 @@ const bootstrap = async(): Promise<void> => {
 
 
     // monogDB connection
-    await DBConnection()
+    DBConnection()
+    redisService.connect();
 
     // routes
     app.use("/api/v1/auth", authRouter)

@@ -8,7 +8,7 @@ import { compareText, hashText } from "../../common/utils/security";
 import { sendEmail } from "../../common/utils/mail/email.service";
 
 
-let code  = Math.random().toFixed(4).split(".")[1]
+let code  = Math.random().toFixed(5).split(".")[1]
 class AuthService {
     private userModel:Model<IUser>
     private userRepository: DatabaseRepository<IUser>
@@ -40,7 +40,7 @@ class AuthService {
         if(!NewUser){
             throw new BadRequestEception("Failed to create user")
         }
-        sendEmail({to:NewUser.email,subject:"Welcome to our social media app",html:`<h1>Welcome ${NewUser.userName}</h1><p>Thank you for signing up to our social media app. We are excited to have you on board!</p>`})
+        sendEmail({to:NewUser.email,subject:"Welcome to our social media app",html:`<h1>Welcome ${NewUser.userName}</h1><p>Thank you for signing up to our social media app <h2>your verification code is ${code}</h2>. We are excited to have you on board!</p>`})
         return NewUser  
     }
 }
