@@ -15,8 +15,15 @@ export const signupSchema = {
 }
 
 export const loginSchema = {
-    body:z.object({
+    body:z.strictObject({
         email:z.email({message:"Invalid email address"}),
         password:z.string({error: "Password is required"}).min(9,{error: "Password must be at least 9 characters"}).max(12,{error: "Password must be at most 12 characters"})
+    })
+}
+
+export const verfiyEmailSchema = {
+    body:z.strictObject({
+        email:z.email({message:"Invalid email address"}),
+        code:z.string({message:"invalid otp"})
     })
 }

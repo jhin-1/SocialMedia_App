@@ -1,10 +1,11 @@
+import { Types } from "mongoose";
 import { GenderEnum, ProviderEnum, RoleEnum } from "../../common/enums/index";
 
 export interface IUser {
-    // _id?:string,
+    _id?:Types.ObjectId,
     userName: string,
-    firstName: string,
-    lastName: string,
+    firstName?: string,
+    lastName?: string,
     email: string,
     phone: string,
     profilePicture?: string,

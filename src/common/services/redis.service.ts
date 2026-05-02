@@ -38,11 +38,8 @@ export class RedisService {
 
     get =  async (key:string):Promise<string | null>=>{
         let data =  await this.client.get(key);
-        if(!data){
-            throw new NotFoundException("Key Not Found!")
-        }
         try{
-            data = JSON.parse(data) // convert string back to object if it was stored as an object
+            data = JSON.parse(data!) // convert string back to object if it was stored as an object
         }catch(error){ }
         return data
     }

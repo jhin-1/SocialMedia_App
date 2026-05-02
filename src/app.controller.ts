@@ -7,12 +7,14 @@ import { env } from "./config/env.service"
 import DBConnection from "./database/connection"
 import { redisService } from "./common/services/redis.service"
 
+
     
 const bootstrap = async(): Promise<void> => {
     
     const app: Express = express()
 
-    app.use(cors(),express.json())
+    app.use(express.json())
+    app.use(cors())
     app.use("/upload",express.static("upload"))
 
 
@@ -25,7 +27,6 @@ const bootstrap = async(): Promise<void> => {
     
     // global error handler
     app.use(globalErrorHandler)
-
 
     app.listen(env.PORT, ()=>{
         console.log(`Server is running on port ${env.PORT}`)

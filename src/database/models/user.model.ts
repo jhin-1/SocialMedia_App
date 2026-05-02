@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { GenderEnum, ProviderEnum, RoleEnum } from "../../common/enums";
 import { IUser } from "../../common/interfaces";
+import { hashText } from "../../common/utils/security";
 
 
 
@@ -70,6 +71,16 @@ UserSchema.virtual("userName").set(function(value){
 }).get(function(){
     return `${this.firstName} ${this.lastName}`
 })
+
+//****hooks
+// UserSchema.pre("save",async function(){
+//     // do some thing before save
+//     await hashText(this.password)
+// })
+
+// UserSchema.post("save",function(){
+
+// })
 
 const userModel = mongoose.model<IUser>("User", UserSchema)
 
