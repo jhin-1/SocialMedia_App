@@ -27,7 +27,6 @@ const UserSchema = new mongoose.Schema<IUser>({
     },
     profilePicture:{
         type: String,
-        default:"www.google.com/default-profile-picture.png"
     },
     profileCover:{
         type: [String],

@@ -27,7 +27,7 @@ export class TokenService{
         }
         let accessToken = jwt.sign({id:user._id},Signature,{ 
                         expiresIn:"30m",
-                        notBefore:"30s",
+                        // notBefore:"30s",
                         issuer:host,
                         audience
         }) // generate token with user id and secret keY

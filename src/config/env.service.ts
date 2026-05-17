@@ -17,5 +17,11 @@ export const env = {
     EMAIL_PASS: process.env.EMAIL_PASS as string,
     BASE_URL: process.env.BASE_URL as string,
     REDIS_URI: process.env.REDIS_URL as string,
-    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+    //s3 
+    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME as string,
+    AWS_REGION: process.env.AWS_REGION as string,
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID as string,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY as string,
+    AWS_EXPIRATION_IN: parseInt(process.env.AWS_EXPIRATION_IN as string||"120")
 }

@@ -19,5 +19,10 @@ export class DatabaseRepository<TRowDocs>{
         }
         return doc
     }
-        
+    findById(id:string,select?:string|Record<string,0|1>,populate?:PopulateOptions |PopulateOptions[]){//: Query<HydratedDocument<TRowDocs> | null, HydratedDocument<TRowDocs>>
+        let query = this.model.findById(id)
+        if(select) query = query.select(select)
+        if(populate) query = query.populate(populate)
+        return query
     }
+}

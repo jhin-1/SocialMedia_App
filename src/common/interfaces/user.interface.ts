@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import { GenderEnum, ProviderEnum, RoleEnum } from "../../common/enums/index";
 
 export interface IUser {
-    _id?:Types.ObjectId,
+    _id?: string | Types.ObjectId,
     userName: string,
     firstName?: string,
     lastName?: string,
