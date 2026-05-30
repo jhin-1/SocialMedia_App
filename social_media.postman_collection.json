@@ -1,0 +1,135 @@
+{
+  "info": {
+    "_postman_id": "f1a2b3c4-d5e6-7890-abcd-ef1234567890",
+    "name": "Social Media API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for the Social Media project (auto-generated). Use the environment `Social Media Env` to set `baseUrl` and `authToken`."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/login", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","login"] }
+          }
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"password123\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/signup", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","signup"] }
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"jane@example.com\",\n  \"code\": \"123456\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/verfiyEmail", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","verfiyEmail"] }
+          }
+        },
+        {
+          "name": "Google OAuth",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"token\": \"GOOGLE_OAUTH_TOKEN\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/v1/auth/google", "host": ["{{baseUrl}}"], "path": ["api","v1","auth","google"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/user-profile", "host": ["{{baseUrl}}"], "path": ["api","v1","users","user-profile"] }
+          }
+        },
+        {
+          "name": "Update Profile (single image)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "image", "type": "file", "src": [] }
+              ]
+            },
+            "url": { "raw": "{{baseUrl}}/api/v1/users/update-profile", "host": ["{{baseUrl}}"], "path": ["api","v1","users","update-profile"] }
+          }
+        },
+        {
+          "name": "Update Profile BigAsset (single image)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": { "mode": "formdata", "formdata": [{ "key": "image", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/api/v1/users/update-profile-BigAsset", "host": ["{{baseUrl}}"], "path": ["api","v1","users","update-profile-BigAsset"] }
+          }
+        },
+        {
+          "name": "Update Cover Pictures (multiple files)",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": { "mode": "formdata", "formdata": [{ "key": "files", "type": "file", "src": [] }] },
+            "url": { "raw": "{{baseUrl}}/api/v1/users/update-cover-pictures", "host": ["{{baseUrl}}"], "path": ["api","v1","users","update-cover-pictures"] }
+          }
+        },
+        {
+          "name": "Update Profile Presigned URL",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/v1/users/update-profile-presigned-url", "host": ["{{baseUrl}}"], "path": ["api","v1","users","update-profile-presigned-url"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "item": [
+        {
+          "name": "Get Image from S3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/image_profile/:path", "host": ["{{baseUrl}}"], "path": ["image_profile", ":path"] , "query": [{"key":"donwload","value":"false"},{"key":"filename","value":""}]}
+          }
+        },
+        {
+          "name": "Get Presigned Image URL",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/image_profile_presigned/:path", "host": ["{{baseUrl}}"], "path": ["image_profile_presigned", ":path"] , "query": [{"key":"donwload","value":"false"},{"key":"filename","value":""}]}
+          }
+        }
+      ]
+    }
+  ]
+}

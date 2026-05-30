@@ -17,5 +17,6 @@ export interface IUser {
     confirmEmail: boolean,
     createdAt?: Date,
     updatedAt?: Date,
+    fcm_tokens?:string[]
 }
 

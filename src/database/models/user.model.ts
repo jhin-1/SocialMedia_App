@@ -52,7 +52,10 @@ const UserSchema = new mongoose.Schema<IUser>({
     confirmEmail:{
         type: Boolean,
         default: false
-    }
+    },
+    fcm_tokens:[{
+        type: String,
+    }]
 
 },
 {

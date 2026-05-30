@@ -1,9 +1,10 @@
-import Router, { Request, Response } from 'express';
+import Router, { NextFunction, Request, Response } from 'express';
 import { auth } from '../../middleware/auth.middelware';
 import {userService} from './user.service';
 import SucessResponce from '../../common/exceptions/sucess.responce';
 import { uploadFile } from '../../common/utils/multer/cloude';
 import { MulterEnum } from '../../common/enums/multer.enums';
+import autauthorization from '../../middleware/authorization';
 
 
 
@@ -38,8 +39,11 @@ router.patch('/update-profile-presigned-url', auth, async(req:Request,res:Respon
     return SucessResponce({res,message:"Success",status:200,data:UserData})
 })
 
-
-
+router.post("/notifications", auth ,async(req:Request,res:Response)=>{
+    let {token} = req.body ; let userId = req.userId as string
+    let UserData = await userService.sendNotification(userId ,token as string)
+    return SucessResponce({res,message:"Success",status:200,data:UserData})
+})
 
 
 

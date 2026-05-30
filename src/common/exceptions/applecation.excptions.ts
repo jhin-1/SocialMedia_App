@@ -36,3 +36,8 @@ export class ConflictException extends ApplicationError {
         super(message, 409, cause);
     }
 }
+export class ForbiddenExcption extends ApplicationError{
+    constructor(message: string, cause?: unknown) {
+        super(message, 403, cause);
+    }
+}

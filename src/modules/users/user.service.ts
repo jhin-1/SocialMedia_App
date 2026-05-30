@@ -5,8 +5,7 @@ import { IUser } from "../../common/interfaces";
 import { NotFoundException } from "../../common/exceptions/applecation.excptions";
 import s3Service from "../../common/services/s3.service";
 import { MulterEnum } from "../../common/enums/multer.enums";
-import { pipeline } from "stream/promises";
-import { promisify } from "util";
+import { sendNotificationFirebase } from "../../common/services/firebase.service";
 
 class UserService{
     private userModel:Model<IUser> // this is Property of class
@@ -86,6 +85,22 @@ class UserService{
     userProfile.profilePicture = key
     await userProfile.save()
     return {url,userProfile} 
+    }
+
+    async sendNotification(userId:string,FCM_Token:string): Promise<HydratedDocument<IUser>>{
+        let user = await this.userRepository.findoneAndUpdate({
+            _id: new Types.ObjectId(userId)
+        },
+            {
+                $addToSet:{
+                    fcm_tokens:FCM_Token
+                }
+            })
+        if(!user){
+            throw new NotFoundException("user Not found!")
+        }
+        await sendNotificationFirebase(user._id.toString(),{title:"SocialMedia",body:`Welcome ${user.userName}`})
+        return user
     }
 
 }

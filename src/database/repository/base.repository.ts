@@ -1,4 +1,4 @@
-
+import {  QueryOptions, UpdateQuery } from "mongoose";
 import { HydratedDocument, Model, PopulateOptions } from "mongoose";
 
 
@@ -24,5 +24,21 @@ export class DatabaseRepository<TRowDocs>{
         if(select) query = query.select(select)
         if(populate) query = query.populate(populate)
         return query
+    }
+    findoneAndUpdate(
+        filter:Partial<TRowDocs>,
+        update:UpdateQuery<TRowDocs>,
+        options?:QueryOptions,
+        select?:string|Record<string,0|1>,
+        populate?:PopulateOptions |PopulateOptions[]
+    ) {
+        let qurey = this.model.findOneAndUpdate(filter,update,{
+            returnDocument:"after",
+            ...options
+        })
+        if(select) qurey = qurey.select(select)
+        if(populate) qurey = qurey.populate(populate) 
+        
+        return qurey
     }
 }
