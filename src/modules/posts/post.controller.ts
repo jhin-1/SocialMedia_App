@@ -6,7 +6,8 @@ import { uploadFile } from '../../common/utils/multer/cloude';
 import { MulterEnum } from '../../common/enums/multer.enums';
 import autauthorization from '../../middleware/authorization';
 import { ValidationSchema } from '../../middleware/validation.middelware';
-import { createPostSchema } from './post.validtion';
+import { createPostSchema, getPostSchema } from './post.validtion';
+import { getDto } from './post.dto';
 
 
 
@@ -18,9 +19,8 @@ router.post('/create',auth,uploadFile({storageKey: MulterEnum.diskStorage}).arra
     return SucessResponce({res,message:"Created Successfully",status:201,data:post})
 })
 
-router.get("/post/:id",auth,async(req:Request,res:Response)=>{
-    let {id} = req.params 
-    let post = await postService.getpost(id as string)  
+router.get("/post/:id",auth,ValidationSchema(getPostSchema),async(req:Request,res:Response)=>{
+    let post = await postService.getpost(req.params as getDto)
     return SucessResponce({res,message:"Sucessfully",status:200,data:post})
 })
 

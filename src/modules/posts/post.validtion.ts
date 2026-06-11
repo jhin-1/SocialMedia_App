@@ -19,3 +19,12 @@ export const createPostSchema = {
         error:"please send content or attachments "
     })
 }
+
+
+export const getPostSchema = {
+    params: z.object({
+        id: z.string().min(1, {
+            message: "Post id is required"
+        })
+    })
+};

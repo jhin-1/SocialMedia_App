@@ -5,7 +5,7 @@ import { IPost, IUser } from "../../common/interfaces";
 import { BadRequestEception, NotFoundException } from "../../common/exceptions/applecation.excptions";
 import s3Service from "../../common/services/s3.service";
 import { sendNotificationFirebase } from "../../common/services/firebase.service";
-import { createDto } from "./post.dto";
+import { createDto, getDto } from "./post.dto";
 import userModel from "../../database/models/user.model";
 import { Visibility } from "../../common/enums";
 
@@ -23,21 +23,24 @@ class PostService{
     
     async createPost(data:createDto,userId:string,Files:Express.Multer.File[]):Promise<IPost>{
         let {content ,tags,visibility} = data 
-        if (!content?.length && !Files.length){
-            throw new BadRequestEception("please send content or attachments  ")
-        }
+
         tags = Array.from(new Set(tags)) // remove duplicate 
 
         if(tags && tags.length ){
+
             let users = await Promise.all( tags.map((id)=>this.userRepository.findById(id).select(" ")) )
+
             let notfound_users = users.some((user)=> user === null)
+
             if(notfound_users){
                 throw new BadRequestEception("user is not found!")
             }
+
             if(users.length !== tags.length){
                 throw new NotFoundException("One or more tags are not valid")
             }
         }
+
         let images
         if( Files && Files.length ){
             let{result} = await this.s3.uploadAssets({
@@ -46,6 +49,7 @@ class PostService{
             })
             images  = result
         }
+
         let post = await this.postRepository.create({
             userId,
             content,
@@ -56,7 +60,7 @@ class PostService{
         return post 
     }
 
-    async getpost(id:string):Promise<IPost>{
+    async getpost({id}:getDto):Promise<IPost>{
         let post = await this.postRepository.findById(id).select(" userId content attachments").populate("userId")
         if(!post){
             throw new NotFoundException("post not found!")
