@@ -8,6 +8,8 @@ type ValidationSchema = Partial<Record<ValidationKey,ZodType>> // Partial becaus
 export const ValidationSchema = (schema: ValidationSchema) => {
     return ((req: Request, res: Response, next: NextFunction) => {
         let validationErrors: {key: ValidationKey, issue: ZodError["issues"]}[] = []
+        if(req.files) req.body.files = req.files as Express.Multer.File[]
+        if(req.file) req.body.file = req.file as Express.Multer.File
         for(const key of Object.keys(schema) as ValidationKey[]){
             if(!schema[key]){
                 continue

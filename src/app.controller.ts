@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express"
 import { type Express } from "express"
 import { globalErrorHandler } from "./middleware/error.middleware"
-import { authRouter, userRouter } from "./modules"
+import { authRouter, userRouter,postRouter } from "./modules"
 import cors from "cors"
 import { env } from "./config/env.service"
 import DBConnection from "./database/connection"
@@ -11,6 +11,7 @@ import { promisify } from "util";
 import s3Service from "./common/services/s3.service";
 import { NotFoundException } from './common/exceptions/applecation.excptions';
 import SucessResponce from "./common/exceptions/sucess.responce"
+import {Server, Socket} from "socket.io"
 
 
 let s3GetFile = promisify(pipeline) // pipeline is a function that allows us to pipe the s3 stream to the response stream
@@ -68,17 +69,31 @@ const bootstrap = async(): Promise<void> => {
 
     // monogDB connection
     DBConnection()
+
+    // redis connection
     redisService.connect();
 
     // routes
     app.use("/api/v1/auth", authRouter)
     app.use("/api/v1/users", userRouter)
+    app.use("/api/v1/posts", postRouter)
     
     // global error handler
     app.use(globalErrorHandler)
 
-    app.listen(env.PORT, ()=>{
+    const httpserver = app.listen(env.PORT, ()=>{
         console.log(`Server is running on port ${env.PORT}`)
+    })
+
+    const io = new Server(httpserver)
+
+    io.on("connection",(socket)=>{
+        console.log(" connected", socket.id) 
+        socket.on("sayhi",(data,callback)=>{
+            console.log(data)
+            callback("its call back")
+            // socket.emit("sayhi","back is here")
+        })
     })
 }
 

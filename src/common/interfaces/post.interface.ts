@@ -5,7 +5,7 @@ import { Visibility } from "../enums";
 
 export interface IPost {
 
-    userId: Types.ObjectId | IUser,
+    userId: Types.ObjectId | IUser | string,
     content?: string| undefined,
     attachments?: string[] | undefined,
     tags?:string[]|IUser[]| undefined,
@@ -14,5 +14,5 @@ export interface IPost {
     updatedAt?: Date,
     deletedAt?: Date ,
     restoredAt?: Date
-    visibility?: Visibility
+    visibility?: Visibility |string
 }

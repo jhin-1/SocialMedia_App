@@ -30,10 +30,10 @@ const PostSchema = new mongoose.Schema<IPost>({
         ref: "User"
     }],
 
-    likes:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-    }],
+    // likes:[{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "User"
+    // }],
 
     visibility:{
         type: String,
