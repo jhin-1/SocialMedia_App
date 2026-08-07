@@ -11,7 +11,7 @@ import { promisify } from "util";
 import s3Service from "./common/services/s3.service";
 import { NotFoundException } from './common/exceptions/applecation.excptions';
 import SucessResponce from "./common/exceptions/sucess.responce"
-import {Server, Socket} from "socket.io"
+import {Server} from "socket.io"
 
 
 let s3GetFile = promisify(pipeline) // pipeline is a function that allows us to pipe the s3 stream to the response stream

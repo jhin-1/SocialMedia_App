@@ -9,6 +9,9 @@ export class DatabaseRepository<TRowDocs>{
     create(data: Partial<TRowDocs>):Promise<HydratedDocument<TRowDocs>>{
         return this.model.create(data)
     }
+    find (filter:Partial<TRowDocs>,select?:string|Record<string ,0|1>,populate?:PopulateOptions |PopulateOptions[]){//: Query<HydratedDocument<TRowDocs> | null, HydratedDocument<TRowDocs>>
+        let doc = this.model.find(filter)
+    }
     findOne(filter:Partial<TRowDocs>,select?:string|Record<string ,0|1>,populate?:PopulateOptions |PopulateOptions[]){//: Query<HydratedDocument<TRowDocs> | null, HydratedDocument<TRowDocs>>
         let doc = this.model.findOne(filter)
         if(select){

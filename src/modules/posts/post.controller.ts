@@ -24,5 +24,14 @@ router.get("/post/:id",auth,ValidationSchema(getPostSchema),async(req:Request,re
     return SucessResponce({res,message:"Sucessfully",status:200,data:post})
 })
 
+router.get("",auth,async(req:Request,res:Response)=>{
+    let posts = await postService.getPosts(req.query )
+    return SucessResponce({res,message:"Sucessfully",status:200,data:posts})
+})
+
+router.put("/updatePost/:id",auth,async(req:Request,res:Response)=>{
+    let post = await postService.updatePost(req.params as any,req.userId! as string,req.body)
+    return SucessResponce({res,message:"Updated Successfully",status:200,data:post})
+})
 
 export default router;

@@ -27,12 +27,12 @@ class AuthService {
 
     async login(data: LoginDto){
         let {email,password} = data
-        let existeduser = await this.userRepository.findOne({email,provider:ProviderEnum.System})
-        if(existeduser){
-            const ismatched = await compareText(password,existeduser.password)
+        let user = await this.userRepository.findOne({email,provider:ProviderEnum.System})
+        if(user){
+            const ismatched = await compareText(password,user.password)
             if(ismatched){
-                let{accessToken, RefreshToken} = this.tokenService.generateToken(existeduser,env.BASE_URL)
-                return {existeduser,accessToken,RefreshToken}
+                let{accessToken, RefreshToken} = this.tokenService.generateToken(user,env.BASE_URL)
+                return {user,accessToken,RefreshToken}
             }else{
                 throw new BadRequestEception("email or password not invalid")
             }
