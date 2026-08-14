@@ -1,76 +1,76 @@
 import mongoose from "mongoose";
 import { GenderEnum, ProviderEnum, RoleEnum } from "../../common/enums";
 import { IUser } from "../../common/interfaces";
-import { hashText } from "../../common/utils/security";
+
 
 
 
 const UserSchema = new mongoose.Schema<IUser>({
-    firstName:{
+    firstName: {
         type: String,
-        required:true,
-        
+        required: true,
+
     },
-    lastName:{
+    lastName: {
         type: String,
-        required:true,
-        
+        required: true,
+
     },
-    email:{
+    email: {
         type: String,
         required: true,
         unique: true,
     },
-    phone:{
+    phone: {
         type: String,
         unique: true,
     },
-    profilePicture:{
+    profilePicture: {
         type: String,
     },
-    profileCover:{
+    profileCover: {
         type: [String],
     },
-    password:{
+    password: {
         type: String,
-        required: function(this){
+        required: function (this) {
             return this.provider == ProviderEnum.System
         }
     },
-    gender:{
+    gender: {
         type: Number,
         default: GenderEnum.Male,
     },
-    role:{
+    role: {
         type: Number,
         default: RoleEnum.User,
     },
-    provider:{
+    provider: {
         type: Number,
         default: ProviderEnum.System,
     },
-    confirmEmail:{
+    confirmEmail: {
         type: Boolean,
         default: false
     },
-    fcm_tokens:[{
+    fcm_tokens: [{
         type: String,
     }]
 
 },
-{
-    timestamps: true,
-    toObject:{
-        virtuals: true,
+    {
+        timestamps: true,
+        toObject: {
+            virtuals: true,
+        }
     }
-}
 )
 
-UserSchema.virtual("userName").set(function(value){
+UserSchema.virtual("userName").set(function (value) {
     let [firtName, lastName] = value.split(" ")
     this.firstName = firtName
     this.lastName = lastName
-}).get(function(){
+}).get(function () {
     return `${this.firstName} ${this.lastName}`
 })
 
