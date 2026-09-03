@@ -1,3 +1,6 @@
 export * from "./auth"
 export * from "./users"
 export * from "./posts"
+export * from "./messages"
+export * from "./friends"
+export * from "./realtime"

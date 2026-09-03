@@ -1,100 +1,105 @@
 import express, { Request, Response } from "express"
 import { type Express } from "express"
 import { globalErrorHandler } from "./middleware/error.middleware"
-import { authRouter, userRouter,postRouter } from "./modules"
+import { authRouter, userRouter, postRouter, messageRouter, friendsRouter, realTimeGetway } from "./modules"
 import cors from "cors"
 import { env } from "./config/env.service"
 import DBConnection from "./database/connection"
-import { redisService } from "./common/services/redis.service"
+import { RedisService, redisService } from "./common/services/redis.service"
 import { pipeline } from "stream";
 import { promisify } from "util";
 import s3Service from "./common/services/s3.service";
 import { NotFoundException } from './common/exceptions/applecation.excptions';
 import SucessResponce from "./common/exceptions/sucess.responce"
-import {Server} from "socket.io"
-
+import { Server } from "socket.io"
+import { xid } from "zod"
 
 let s3GetFile = promisify(pipeline) // pipeline is a function that allows us to pipe the s3 stream to the response stream
 
 
-const bootstrap = async(): Promise<void> => {
-    
+const bootstrap = async (): Promise<void> => {
+
     const app: Express = express()
 
     app.use(express.json())
     app.use(cors({
-    origin: ["http://127.0.0.1:5500", "http://localhost:5500"]
-}));
-    app.use("/upload",express.static("upload"))
+        origin: ["http://127.0.0.1:5500", "http://localhost:5500"]
+    }));
+    app.use("/upload", express.static("upload"))
 
     // route to get image from s3 bucket
-    app.get('/image_profile/*path',async(req:Request,res:Response)=>{
-    let { path } = req.params as {path:string[]} // path is an array of strings
+    app.get('/image_profile/*path', async (req: Request, res: Response) => {
+        let { path } = req.params as { path: string[] } // path is an array of strings
 
-    let {donwload,filename} = req.query as {donwload?:string,filename?:string}
+        let { donwload, filename } = req.query as { donwload?: string, filename?: string }
 
-    if(!path){
-        throw new NotFoundException("File Not Found!")
-    }
+        if (!path) {
+            throw new NotFoundException("File Not Found!")
+        }
 
-    let key = path.join("/") //  convert array to string with "/" as separator
+        let key = path.join("/") //  convert array to string with "/" as separator
 
-    let {Body,ContentType} = await s3Service.getAsset({key})
+        let { Body, ContentType } = await s3Service.getAsset({ key })
 
-    s3GetFile(Body as NodeJS.ReadableStream,res) // pipe the s3 stream to the response stream
+        s3GetFile(Body as NodeJS.ReadableStream, res) // pipe the s3 stream to the response stream
 
-    res.setHeader("Content-Type",ContentType as string)
-    res.set("Cross-Origin-Resource-Policy","cross-origin") // for frontendt to access the file
-    if(donwload == "true"){
-        res.setHeader("Content-Disposition",`attachment; filename="${filename ||key.split("/").pop()}"`)
-    }
-    return res
-})
+        res.setHeader("Content-Type", ContentType as string)
+        res.set("Cross-Origin-Resource-Policy", "cross-origin") // for frontendt to access the file
+        if (donwload == "true") {
+            res.setHeader("Content-Disposition", `attachment; filename="${filename || key.split("/").pop()}"`)
+        }
+        return res
+    })
     // get presigned url for image
-    app.get('/image_profile_presigned/*path',async(req:Request,res:Response)=>{
-    let { path } = req.params as {path:string[]} // path is an array of strings
+    app.get('/image_profile_presigned/*path', async (req: Request, res: Response) => {
+        let { path } = req.params as { path: string[] } // path is an array of strings
 
-    let {donwload,filename} = req.query as {donwload:string,filename:string}
+        let { donwload, filename } = req.query as { donwload: string, filename: string }
 
-    if(!path){
-        throw new NotFoundException("File Not Found!")
-    }
-    
-    let key = path.join("/") // convert array to string with "/" as separator
-    
-    let url = await s3Service.getPresignedUrl({key, donwload, filename})
-    return SucessResponce({res,message:"Success",status:200,data:{url}})
-})
+        if (!path) {
+            throw new NotFoundException("File Not Found!")
+        }
 
+        let key = path.join("/") // convert array to string with "/" as separator
 
+        let url = await s3Service.getPresignedUrl({ key, donwload, filename })
+        return SucessResponce({ res, message: "Success", status: 200, data: { url } })
+    })
     // monogDB connection
     DBConnection()
 
     // redis connection
-    redisService.connect();
+    await redisService.connect();
+
 
     // routes
     app.use("/api/v1/auth", authRouter)
     app.use("/api/v1/users", userRouter)
     app.use("/api/v1/posts", postRouter)
-    
+    app.use("/api/v1/messages", messageRouter)
+    app.use("/api/v1/friends", friendsRouter)
+
+
     // global error handler
     app.use(globalErrorHandler)
 
-    const httpserver = app.listen(env.PORT, ()=>{
+    const httpserver = app.listen(env.PORT, () => {
         console.log(`Server is running on port ${env.PORT}`)
     })
 
-    const io = new Server(httpserver)
+    realTimeGetway.initializeIO(httpserver)
+    // new ChatService(httpserver)
+    // const io = new Server(httpserver)
+    // io.on("connection", (socket) => {
+    //     console.log(" connected", socket.id)
+    //     socket.on("sayhi", (data, callback) => {
+    //         console.log(data)
+    //         callback("its call back")
+    //         // socket.emit("sayhi","back is here")
+    //     })
+    // })
 
-    io.on("connection",(socket)=>{
-        console.log(" connected", socket.id) 
-        socket.on("sayhi",(data,callback)=>{
-            console.log(data)
-            callback("its call back")
-            // socket.emit("sayhi","back is here")
-        })
-    })
+
 }
 
-export default bootstrap
+export default bootstrap  

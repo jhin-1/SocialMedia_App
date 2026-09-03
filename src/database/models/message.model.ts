@@ -5,9 +5,12 @@ import { messageInterface } from "../../common/interfaces/message.interface";
 
 const MessageSchema = new mongoose.Schema<messageInterface>({
     senderId: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+    },
+    receiverId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
     message: {
         type: String,
